@@ -4,9 +4,15 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/ianScene.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: fd749e889695ef74e8b05f319ae626ed, type: 2}
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 735f7d403656da24eb0081d9eec91174, type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 1cf45d8ba8422e84f95b84b3f03f65cb, type: 2}
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: ceb373c5c7c1adf4cba5540b8de45f0a, type: 2}
+    com.unity.xr.magicleap.magic_leap_settings: {fileID: 11400000, guid: ccc8cd20317b8004383028d40aa45362, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 736b89e9874b64f4daf0cb141f8b408f, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 93e913660a7f7db41bea14fca0597672, type: 2}
