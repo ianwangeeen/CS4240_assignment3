@@ -44,24 +44,9 @@ public class ARTapToPlaceObject : MonoBehaviour
             ********************** I COMMENTED THIS OUT COS I COULDNT TEST AND I THOUGH THERE MIGHT BE SOME KIND OF PROBLEM WITH MY CAMERA INITIALISATION WITH LINE 48
             PLS TRY TO UNCOMMENT LINES 47 to 59 COS THATS THE PROF'S CODE **************************
         */
-        // // convert viewport position to screen position. Center of screen may not be (0.5, 0.5) since different phones have different sizes
-        // var screenCenter = Camera.current.ViewportToScreenPoint(new Vector3(0.5f, 0.5f)); 
+        // convert viewport position to screen position. Center of screen may not be (0.5, 0.5) since different phones have different sizes
+        var screenCenter = Camera.current.ViewportToScreenPoint(new Vector3(0.5f, 0.5f)); 
 
-        // // shoot a ray out from middle of screen to see if it hits anything
-        // var hits = new List<ARRaycastHit>();
-        // raycastManager.Raycast(screenCenter, hits, TrackableType.Planes);
-
-        // // is there a plane and are we currently facing it
-        // placementPoseIsValid = hits.Count > 0;
-        // if (placementPoseIsValid)
-        // {
-        //     PlacementPose = hits[0].pose;
-        // }
-
-
-
-        // my code
-        Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
         // shoot a ray out from middle of screen to see if it hits anything
         var hits = new List<ARRaycastHit>();
         raycastManager.Raycast(screenCenter, hits, TrackableType.Planes);
@@ -100,12 +85,4 @@ public class ARTapToPlaceObject : MonoBehaviour
          */
         Instantiate(DataHandler.Instance.GetFurniture(), PlacementPose.position, PlacementPose.rotation);
     }
-
-    // bool IsValidPointer(Touch touch) {
-    //     PointerEventData eventData = new PointerEventData(EventSystem.current);
-    //     eventData.position = new Vector2(touch.position.x, touch.position.y);
-    //     List<RaycastResult> results = new List<RaycastResult>();
-    //     EventSystem.current.RaycastAll(eventData, results);
-    //     return results.Count > 0;
-    // }
 }
