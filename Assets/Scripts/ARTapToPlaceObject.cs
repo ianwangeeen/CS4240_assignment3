@@ -13,6 +13,10 @@ public class ARTapToPlaceObject : MonoBehaviour
     private bool placementPoseIsValid = false;
     private Touch touch;
 
+    private GameObject activeObject;
+    private float speedModifier = 0.0005f;
+    private Vector3 translationVector;
+
     private void Start()
     {
         raycastManager = FindObjectOfType<ARRaycastManager>();
@@ -28,10 +32,35 @@ public class ARTapToPlaceObject : MonoBehaviour
         if (Input.touchCount < 0 || touch.phase != TouchPhase.Began) return;
         // if (IsValidPointer(touch)) return;
 
+
         // if there is a valid location + we tap the screen, spawn an item at that location
-        if (placementPoseIsValid && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        if (placementPoseIsValid && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && activeObject == null)
         {
             PlaceObject();
+        }
+        if (Input.GetTouch(0).phase == TouchPhase.Moved && activeObject != null)
+        {
+            moveObject();
+        }
+        if (Input.GetTouch(0).phase == TouchPhase.Ended)
+        { 
+            Ray raycast = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+            RaycastHit raycastHit;
+            if (Physics.Raycast(raycast, out raycastHit))
+            {
+                if (raycastHit.collider.CompareTag("Spawnable"))
+                {
+                    activeObject = raycastHit.collider.gameObject; // select object
+                }
+                else 
+                {
+                    activeObject = null; // deselect object
+                }
+            }
+            else 
+            {
+                activeObject = null; // deselect object
+            }
         }
     }
 
@@ -99,6 +128,16 @@ public class ARTapToPlaceObject : MonoBehaviour
          * Can we set the obj to spawn based on the furniture we choose? That way we can spawn the furniture selected during runtime
          */
         Instantiate(DataHandler.Instance.GetFurniture(), PlacementPose.position, PlacementPose.rotation);
+    }
+
+    void moveObject()
+    {
+        // Convert X-Y touch movement to object translation in world space
+        translationVector = new Vector3(Camera.main.transform.forward.x, 0f, Camera.main.transform.forward.z);
+        activeObject.transform.Translate(translationVector * Input.GetTouch(0).deltaPosition.y * speedModifier, Space.World);
+
+        translationVector = new Vector3(Camera.main.transform.right.x, 0f, Camera.main.transform.right.z);
+        activeObject.transform.Translate(translationVector * Input.GetTouch(0).deltaPosition.x * speedModifier, Space.World);
     }
 
     // bool IsValidPointer(Touch touch) {
