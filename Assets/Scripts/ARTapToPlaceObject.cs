@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
@@ -40,13 +41,7 @@ public class ARTapToPlaceObject : MonoBehaviour
      */
     void UpdatePlacementPose()
     {
-        /* 
-            ********************** I COMMENTED THIS OUT COS I COULDNT TEST AND I THOUGH THERE MIGHT BE SOME KIND OF PROBLEM WITH MY CAMERA INITIALISATION WITH LINE 48
-            PLS TRY TO UNCOMMENT LINES 47 to 59 COS THATS THE PROF'S CODE **************************
-        */
-        // convert viewport position to screen position. Center of screen may not be (0.5, 0.5) since different phones have different sizes
-        var screenCenter = Camera.current.ViewportToScreenPoint(new Vector3(0.5f, 0.5f)); 
-
+        Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
         // shoot a ray out from middle of screen to see if it hits anything
         var hits = new List<ARRaycastHit>();
         raycastManager.Raycast(screenCenter, hits, TrackableType.Planes);
@@ -77,12 +72,30 @@ public class ARTapToPlaceObject : MonoBehaviour
         }
     }
 
+    private IEnumerator LerpObjectScale(Vector3 a, Vector3 b, float time, GameObject lerpObject)
+    {
+        float i = 0.0f;
+        float rate = (1.0f / time);
+        while (i < 1.0f)
+        {
+            i += Time.deltaTime * rate;
+            lerpObject.transform.localScale = Vector3.Lerp(a, b, i);
+            yield return null;
+        }
+    }   
+
     private void PlaceObject()
     {
         /**
          * ASSIGNMENT 3 HINT
          * Can we set the obj to spawn based on the furniture we choose? That way we can spawn the furniture selected during runtime
          */
-        Instantiate(DataHandler.Instance.GetFurniture(), PlacementPose.position, PlacementPose.rotation);
+        GameObject furnitureObject = Instantiate(DataHandler.Instance.GetFurniture(), PlacementPose.position, PlacementPose.rotation);
+
+        // Set the initial scale to zero
+        furnitureObject.transform.localScale = Vector3.zero;
+
+        // Start the animation coroutine to scale the furniture object
+        StartCoroutine(LerpObjectScale(Vector3.zero, Vector3.one, 0.5f, furnitureObject));
     }
 }
