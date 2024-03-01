@@ -94,8 +94,8 @@ public class ARTapToPlaceObject : MonoBehaviour
 
     private IEnumerator HideDebugMessageAfterDelay()
     {
-        // Wait for 3 seconds
-        yield return new WaitForSeconds(3f);
+        // Wait for 1 second
+        yield return new WaitForSeconds(1f);
 
         // Disable the debug text after 3 seconds
         errorText.gameObject.SetActive(false);
@@ -104,21 +104,24 @@ public class ARTapToPlaceObject : MonoBehaviour
     private void PlaceObject()
     {
         // Check for any colliders in the area where you want to spawn the furniture using an overlap sphere
-        Collider[] colliders = Physics.OverlapSphere(placementIndicator.transform.position, 1.1f); // Adjust the radius as needed
+        Collider[] colliders = Physics.OverlapSphere(placementIndicator.transform.position, 0.5f); // Adjust the radius as needed
 
         // Loop through all colliders to check if any belong to another furniture object
         foreach (Collider collider in colliders)
         {
             if (collider.CompareTag("Furniture"))
             {
-                errorText.text = "Cannot spawn furniture. Another furniture object is in the way.";
+                errorText.text = "Another furniture object is in the way.";
                 errorText.gameObject.SetActive(true);
                 // Start the coroutine to hide the debug message after 3 seconds
                 StartCoroutine(HideDebugMessageAfterDelay());
                 return; // Exit the method without spawning the object
             }
         }
-
+        errorText.text = "Place object";
+        errorText.gameObject.SetActive(true);
+        // Start the coroutine to hide the debug message after 3 seconds
+        StartCoroutine(HideDebugMessageAfterDelay());
         /**
          * ASSIGNMENT 3 HINT
          * Can we set the obj to spawn based on the furniture we choose? That way we can spawn the furniture selected during runtime
