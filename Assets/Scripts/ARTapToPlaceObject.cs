@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
 public class ARTapToPlaceObject : MonoBehaviour
 {
-    public GameObject placementIndicator;
+    [SerializeField] private GameObject placementIndicator;
     // public GameObject objToSpawn;
+    [SerializeField] private TextMeshProUGUI errorText;
 
     private Pose PlacementPose; // Stores position + rotation data
     private ARRaycastManager raycastManager;
@@ -17,22 +19,28 @@ public class ARTapToPlaceObject : MonoBehaviour
     private void Start()
     {
         raycastManager = FindObjectOfType<ARRaycastManager>();
+        errorText.gameObject.SetActive(false);
     }
 
     private void Update()
     {
         UpdatePlacementPose();
         UpdatePlacementIndicator();
-        // touch = Input.GetTouch(0);
 
-        // If no touch has been detected or touch has not began yet, just return
-        if (Input.touchCount < 0 || touch.phase != TouchPhase.Began) return;
-        // if (IsValidPointer(touch)) return;
-
-        // if there is a valid location + we tap the screen, spawn an item at that location
-        if (placementPoseIsValid && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        // Check for touch input
+        if (Input.touchCount > 0)
         {
-            PlaceObject();
+            Touch touch = Input.GetTouch(0);
+
+            // Only proceed if it's the beginning of a touch
+            if (touch.phase == TouchPhase.Began)
+            {
+                // If there is a valid placement pose, spawn an object at that location
+                if (placementPoseIsValid)
+                {
+                    PlaceObject();
+                }
+            }
         }
     }
 
@@ -82,10 +90,35 @@ public class ARTapToPlaceObject : MonoBehaviour
             lerpObject.transform.localScale = Vector3.Lerp(a, b, i);
             yield return null;
         }
-    }   
+    }
+
+    private IEnumerator HideDebugMessageAfterDelay()
+    {
+        // Wait for 3 seconds
+        yield return new WaitForSeconds(3f);
+
+        // Disable the debug text after 3 seconds
+        errorText.gameObject.SetActive(false);
+    }
 
     private void PlaceObject()
     {
+        // Check for any colliders in the area where you want to spawn the furniture using an overlap sphere
+        Collider[] colliders = Physics.OverlapSphere(placementIndicator.transform.position, 1.1f); // Adjust the radius as needed
+
+        // Loop through all colliders to check if any belong to another furniture object
+        foreach (Collider collider in colliders)
+        {
+            if (collider.CompareTag("Furniture"))
+            {
+                errorText.text = "Cannot spawn furniture. Another furniture object is in the way.";
+                errorText.gameObject.SetActive(true);
+                // Start the coroutine to hide the debug message after 3 seconds
+                StartCoroutine(HideDebugMessageAfterDelay());
+                return; // Exit the method without spawning the object
+            }
+        }
+
         /**
          * ASSIGNMENT 3 HINT
          * Can we set the obj to spawn based on the furniture we choose? That way we can spawn the furniture selected during runtime
@@ -97,5 +130,13 @@ public class ARTapToPlaceObject : MonoBehaviour
 
         // Start the animation coroutine to scale the furniture object
         StartCoroutine(LerpObjectScale(Vector3.zero, Vector3.one, 0.5f, furnitureObject));
+
+        // Add Rigidbody component to enable physics interactions with default settings
+        Rigidbody rb = furnitureObject.AddComponent<Rigidbody>();
+        rb.useGravity = false;
+        rb.mass = 100.0f;
+
+        // Tag the spawned furniture object so that we can identify it later
+        furnitureObject.tag = "Furniture";
     }
 }
