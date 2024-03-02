@@ -1,12 +1,15 @@
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
 public class ARTapToPlaceObject : MonoBehaviour
 {
-    public GameObject placementIndicator;
+    [SerializeField] private GameObject placementIndicator;
     // public GameObject objToSpawn;
+    [SerializeField] private TextMeshProUGUI errorText;
 
     private Pose PlacementPose; // Stores position + rotation data
     private ARRaycastManager raycastManager;
@@ -16,22 +19,28 @@ public class ARTapToPlaceObject : MonoBehaviour
     private void Start()
     {
         raycastManager = FindObjectOfType<ARRaycastManager>();
+        errorText.gameObject.SetActive(false);
     }
 
     private void Update()
     {
         UpdatePlacementPose();
         UpdatePlacementIndicator();
-        // touch = Input.GetTouch(0);
 
-        // If no touch has been detected or touch has not began yet, just return
-        if (Input.touchCount < 0 || touch.phase != TouchPhase.Began) return;
-        // if (IsValidPointer(touch)) return;
-
-        // if there is a valid location + we tap the screen, spawn an item at that location
-        if (placementPoseIsValid && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        // Check for touch input
+        if (Input.touchCount > 0)
         {
-            PlaceObject();
+            Touch touch = Input.GetTouch(0);
+
+            // Only proceed if it's the beginning of a touch
+            if (touch.phase == TouchPhase.Began)
+            {
+                // If there is a valid placement pose, spawn an object at that location
+                if (placementPoseIsValid)
+                {
+                    PlaceObject();
+                }
+            }
         }
     }
 
@@ -40,27 +49,6 @@ public class ARTapToPlaceObject : MonoBehaviour
      */
     void UpdatePlacementPose()
     {
-        /* 
-            ********************** I COMMENTED THIS OUT COS I COULDNT TEST AND I THOUGH THERE MIGHT BE SOME KIND OF PROBLEM WITH MY CAMERA INITIALISATION WITH LINE 48
-            PLS TRY TO UNCOMMENT LINES 47 to 59 COS THATS THE PROF'S CODE **************************
-        */
-        // // convert viewport position to screen position. Center of screen may not be (0.5, 0.5) since different phones have different sizes
-        // var screenCenter = Camera.current.ViewportToScreenPoint(new Vector3(0.5f, 0.5f)); 
-
-        // // shoot a ray out from middle of screen to see if it hits anything
-        // var hits = new List<ARRaycastHit>();
-        // raycastManager.Raycast(screenCenter, hits, TrackableType.Planes);
-
-        // // is there a plane and are we currently facing it
-        // placementPoseIsValid = hits.Count > 0;
-        // if (placementPoseIsValid)
-        // {
-        //     PlacementPose = hits[0].pose;
-        // }
-
-
-
-        // my code
         Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
         // shoot a ray out from middle of screen to see if it hits anything
         var hits = new List<ARRaycastHit>();
@@ -92,20 +80,66 @@ public class ARTapToPlaceObject : MonoBehaviour
         }
     }
 
+    private IEnumerator LerpObjectScale(Vector3 a, Vector3 b, float time, GameObject lerpObject)
+    {
+        float i = 0.0f;
+        float rate = (1.0f / time);
+        while (i < 1.0f)
+        {
+            i += Time.deltaTime * rate;
+            lerpObject.transform.localScale = Vector3.Lerp(a, b, i);
+            yield return null;
+        }
+    }
+
+    private IEnumerator HideDebugMessageAfterDelay()
+    {
+        // Wait for 1 second
+        yield return new WaitForSeconds(1f);
+
+        // Disable the debug text after 3 seconds
+        errorText.gameObject.SetActive(false);
+    }
+
     private void PlaceObject()
     {
+        // Check for any colliders in the area where you want to spawn the furniture using an overlap sphere
+        Collider[] colliders = Physics.OverlapSphere(placementIndicator.transform.position, 0.5f); // Adjust the radius as needed
+
+        // Loop through all colliders to check if any belong to another furniture object
+        foreach (Collider collider in colliders)
+        {
+            if (collider.CompareTag("Furniture"))
+            {
+                errorText.text = "Another furniture object is in the way.";
+                errorText.gameObject.SetActive(true);
+                // Start the coroutine to hide the debug message after 3 seconds
+                StartCoroutine(HideDebugMessageAfterDelay());
+                return; // Exit the method without spawning the object
+            }
+        }
+        errorText.text = "Place object";
+        errorText.gameObject.SetActive(true);
+        // Start the coroutine to hide the debug message after 3 seconds
+        StartCoroutine(HideDebugMessageAfterDelay());
         /**
          * ASSIGNMENT 3 HINT
          * Can we set the obj to spawn based on the furniture we choose? That way we can spawn the furniture selected during runtime
          */
-        Instantiate(DataHandler.Instance.GetFurniture(), PlacementPose.position, PlacementPose.rotation);
-    }
+        GameObject furnitureObject = Instantiate(DataHandler.Instance.GetFurniture(), PlacementPose.position, PlacementPose.rotation);
 
-    // bool IsValidPointer(Touch touch) {
-    //     PointerEventData eventData = new PointerEventData(EventSystem.current);
-    //     eventData.position = new Vector2(touch.position.x, touch.position.y);
-    //     List<RaycastResult> results = new List<RaycastResult>();
-    //     EventSystem.current.RaycastAll(eventData, results);
-    //     return results.Count > 0;
-    // }
+        // Set the initial scale to zero
+        furnitureObject.transform.localScale = Vector3.zero;
+
+        // Start the animation coroutine to scale the furniture object
+        StartCoroutine(LerpObjectScale(Vector3.zero, Vector3.one, 0.5f, furnitureObject));
+
+        // Add Rigidbody component to enable physics interactions with default settings
+        Rigidbody rb = furnitureObject.AddComponent<Rigidbody>();
+        rb.useGravity = false;
+        rb.mass = 100.0f;
+
+        // Tag the spawned furniture object so that we can identify it later
+        furnitureObject.tag = "Furniture";
+    }
 }
