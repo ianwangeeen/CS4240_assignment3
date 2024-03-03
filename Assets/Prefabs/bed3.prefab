@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9188412832393217835}
   - component: {fileID: 4592454850843692923}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: bed3
   m_TagString: Furniture
   m_Icon: {fileID: 0}
@@ -64,7 +64,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1302390447980035175, guid: ae56689485882c548b7fddeb43531781, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3892598721888957767, guid: ae56689485882c548b7fddeb43531781, type: 3}
       propertyPath: m_Name
@@ -72,19 +72,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3892598721888957767, guid: ae56689485882c548b7fddeb43531781, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5299696139634029299, guid: ae56689485882c548b7fddeb43531781, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5860424654019467630, guid: ae56689485882c548b7fddeb43531781, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6432835096809209234, guid: ae56689485882c548b7fddeb43531781, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7026730455652128298, guid: ae56689485882c548b7fddeb43531781, type: 3}
       propertyPath: m_LocalPosition.x
