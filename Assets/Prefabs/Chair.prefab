@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8853120282917372462}
   - component: {fileID: 564846947643158200}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Chair
   m_TagString: Furniture
   m_Icon: {fileID: 0}
@@ -62,9 +62,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8853120282917372462}
     m_Modifications:
+    - target: {fileID: 100000, guid: 01dfb375646cba84e9b92e2cedf7d149, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: 01dfb375646cba84e9b92e2cedf7d149, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 100004, guid: 01dfb375646cba84e9b92e2cedf7d149, type: 3}
       propertyPath: m_Name
       value: kitchen_chair_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 01dfb375646cba84e9b92e2cedf7d149, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 01dfb375646cba84e9b92e2cedf7d149, type: 3}
       propertyPath: m_LocalPosition.x

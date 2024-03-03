@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8376748850974382503}
   - component: {fileID: 8835452607587308746}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cabinet
   m_TagString: Furniture
   m_Icon: {fileID: 0}
@@ -62,9 +62,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8376748850974382503}
     m_Modifications:
+    - target: {fileID: 100000, guid: df7f243bd429cd5408f1ad2978c21cec, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: df7f243bd429cd5408f1ad2978c21cec, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: df7f243bd429cd5408f1ad2978c21cec, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: df7f243bd429cd5408f1ad2978c21cec, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 100008, guid: df7f243bd429cd5408f1ad2978c21cec, type: 3}
       propertyPath: m_Name
       value: cabinet_3
+      objectReference: {fileID: 0}
+    - target: {fileID: 100008, guid: df7f243bd429cd5408f1ad2978c21cec, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 400008, guid: df7f243bd429cd5408f1ad2978c21cec, type: 3}
       propertyPath: m_LocalPosition.x
