@@ -16,8 +16,8 @@ public class ARTapToPlaceObject : MonoBehaviour
     private bool placementPoseIsValid = false;
     private Touch touch;
 
-    private bool hold = false;
-    private Transform activeObject;
+    //private bool hold = false;
+    private Transform activeObject = null;
     private Vector3 translationVector;
     private float speedModifier = 0.0005f;
 
@@ -38,7 +38,7 @@ public class ARTapToPlaceObject : MonoBehaviour
             Touch touch = Input.GetTouch(0);
 
             // Drag object
-            if (hold && touch.phase == TouchPhase.Moved)
+            if (touch.phase == TouchPhase.Moved && activeObject != null)
             {
                 MoveObject();
             }
@@ -51,7 +51,7 @@ public class ARTapToPlaceObject : MonoBehaviour
                 {
                     PlaceObject();
                 }
-
+                /*
                 Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
                 RaycastHit hit;
  
@@ -61,12 +61,31 @@ public class ARTapToPlaceObject : MonoBehaviour
                     hold = true;
                     activeObject = hit.transform;
                 }
+                */
             }
 
             // Release touch
             if (touch.phase == TouchPhase.Ended)
             {
-                hold = false;
+                Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+                RaycastHit hit;
+ 
+                // If touch an object that is already placed
+                if (Physics.Raycast(ray, out hit) && (hit.collider.tag == "Furniture"))
+                {
+                    if (activeObject != null)
+                    {
+                        activeObject.gameObject.GetComponent<Outline>().enabled = false;
+                    }
+
+                    activeObject = hit.transform;
+                    activeObject.gameObject.GetComponent<Outline>().enabled = true;
+                }
+                else
+                {
+                    activeObject.gameObject.GetComponent<Outline>().enabled = false;
+                    activeObject = null;
+                }
             }
         }
     }
@@ -154,6 +173,9 @@ public class ARTapToPlaceObject : MonoBehaviour
          * Can we set the obj to spawn based on the furniture we choose? That way we can spawn the furniture selected during runtime
          */
         GameObject furnitureObject = Instantiate(DataHandler.Instance.GetFurniture(), PlacementPose.position, PlacementPose.rotation);
+
+        // Disable outline when furniture is spawned
+        furnitureObject.GetComponent<Outline>().enabled = false;
 
         // Set the initial scale to zero
         furnitureObject.transform.localScale = Vector3.zero;
