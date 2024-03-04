@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8376748850974382503}
   - component: {fileID: 8835452607587308746}
+  - component: {fileID: -2257769380828854190}
   m_Layer: 0
   m_Name: Cabinet
   m_TagString: Furniture
@@ -54,6 +55,24 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 2.15, z: 0.8}
   m_Center: {x: 0, y: 1.07, z: 0}
+--- !u!114 &-2257769380828854190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4322650775127055633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 0, g: 1, b: 1, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1001 &6669066940627081084
 PrefabInstance:
   m_ObjectHideFlags: 0
