@@ -16,6 +16,11 @@ public class ARTapToPlaceObject : MonoBehaviour
     private bool placementPoseIsValid = false;
     private Touch touch;
 
+    private bool hold = false;
+    private Transform activeObject;
+    private Vector3 translationVector;
+    private float speedModifier = 0.0005f;
+
     private void Start()
     {
         raycastManager = FindObjectOfType<ARRaycastManager>();
@@ -32,6 +37,12 @@ public class ARTapToPlaceObject : MonoBehaviour
         {
             Touch touch = Input.GetTouch(0);
 
+            // Drag object
+            if (hold && touch.phase == TouchPhase.Moved)
+            {
+                MoveObject();
+            }
+
             // Only proceed if it's the beginning of a touch
             if (touch.phase == TouchPhase.Began)
             {
@@ -40,6 +51,22 @@ public class ARTapToPlaceObject : MonoBehaviour
                 {
                     PlaceObject();
                 }
+
+                Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+                RaycastHit hit;
+ 
+                // If touch an object that is already placed
+                if (Physics.Raycast(ray, out hit) && (hit.collider.tag == "Furniture"))
+                {
+                    hold = true;
+                    activeObject = hit.transform;
+                }
+            }
+
+            // Release touch
+            if (touch.phase == TouchPhase.Ended)
+            {
+                hold = false;
             }
         }
     }
@@ -141,5 +168,15 @@ public class ARTapToPlaceObject : MonoBehaviour
 
         // Tag the spawned furniture object so that we can identify it later
         furnitureObject.tag = "Furniture";
+    }
+
+    private void MoveObject()
+    {
+        // Convert X-Y touch movement to object translation in world space
+        translationVector = new Vector3(Camera.main.transform.forward.x, 0f, Camera.main.transform.forward.z);
+        activeObject.Translate(translationVector * Input.GetTouch(0).deltaPosition.y * speedModifier, Space.World);
+
+        translationVector = new Vector3(Camera.main.transform.right.x, 0f, Camera.main.transform.right.z);
+        activeObject.Translate(translationVector * Input.GetTouch(0).deltaPosition.x * speedModifier, Space.World);
     }
 }
