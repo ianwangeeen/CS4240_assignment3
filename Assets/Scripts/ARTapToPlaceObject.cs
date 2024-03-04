@@ -201,4 +201,12 @@ public class ARTapToPlaceObject : MonoBehaviour
         translationVector = new Vector3(Camera.main.transform.right.x, 0f, Camera.main.transform.right.z);
         activeObject.Translate(translationVector * Input.GetTouch(0).deltaPosition.x * speedModifier, Space.World);
     }
+
+    public void DeleteObject()
+    {
+        if (activeObject != null) 
+        {
+            activeObject.gameObject.SetActive(false);
+        }
+    }
 }
