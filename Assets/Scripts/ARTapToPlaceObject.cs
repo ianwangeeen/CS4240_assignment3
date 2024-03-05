@@ -46,22 +46,13 @@ public class ARTapToPlaceObject : MonoBehaviour
             // Only proceed if it's the beginning of a touch
             if (touch.phase == TouchPhase.Began)
             {
+                bool isOverUI = touch.position.IsPointOverUIObject();
+                
                 // If there is a valid placement pose, spawn an object at that location
-                if (placementPoseIsValid)
+                if (!isOverUI && placementPoseIsValid)
                 {
                     PlaceObject();
                 }
-                /*
-                Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-                RaycastHit hit;
- 
-                // If touch an object that is already placed
-                if (Physics.Raycast(ray, out hit) && (hit.collider.tag == "Furniture"))
-                {
-                    hold = true;
-                    activeObject = hit.transform;
-                }
-                */
             }
 
             // Release touch
@@ -73,6 +64,7 @@ public class ARTapToPlaceObject : MonoBehaviour
                 // If touch an object that is already placed
                 if (Physics.Raycast(ray, out hit) && (hit.collider.tag == "Furniture"))
                 {
+                    // Deselect the previously selected object
                     if (activeObject != null)
                     {
                         activeObject.gameObject.GetComponent<Outline>().enabled = false;
@@ -83,6 +75,7 @@ public class ARTapToPlaceObject : MonoBehaviour
                 }
                 else
                 {
+                    // Deselect all objects if tap outside object
                     activeObject.gameObject.GetComponent<Outline>().enabled = false;
                     activeObject = null;
                 }
