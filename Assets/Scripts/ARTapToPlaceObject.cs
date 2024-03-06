@@ -179,7 +179,7 @@ public class ARTapToPlaceObject : MonoBehaviour
         // Add Rigidbody component to enable physics interactions with default settings
         Rigidbody rb = furnitureObject.AddComponent<Rigidbody>();
         rb.useGravity = false;
-        rb.mass = 100.0f;
+        rb.mass = 10000.0f;
 
         // Tag the spawned furniture object so that we can identify it later
         furnitureObject.tag = "Furniture";
